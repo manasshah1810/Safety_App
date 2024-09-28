@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Safety App - Live Location on OpenStreetMap</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <style>
+    #map {
+      height: 100vh;
+      width: 100vw;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+  <!-- Location JS for getting user location -->
+  <script>
+    // Set default location to London
+    let defaultPosition = [51.509865, -0.118092];
+    
+    // Initialize the map and set its view to the default position
+    const map = L.map('map').setView(defaultPosition, 13);
+
+    // Add OpenStreetMap tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Create a marker with default position
+    const marker = L.marker(defaultPosition).addTo(map);
+
+    // Function to update location
+    function updateLocation(position) {
+      const latlng = [position.coords.latitude, position.coords.longitude];
+
+      // Move the map to the current location
+      map.setView(latlng, 15);
+
+      // Move the marker to the current location
+      marker.setLatLng(latlng);
+    }
+
+    // Get current location using browser's Geolocation API
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(updateLocation, (error) => {
+        console.error("Error getting location: ", error.message);
+      });
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+  </script>
+</body>
+</html>
